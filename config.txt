@@ -1,0 +1,100 @@
+netstat -na
+
+askmara Awww.test.net
+
+ps auxw | grep maradns
+
+scp transfer files over ssh
+
+wget to download http https ftp,.. files from internet
+------------------------------------------------
+Open firewall port on CentOS 6
+http://lancegatlin.org/tech/centos-6-open-a-port-for-iptables
+
+(1)
+If udp, instead add the following line above the first reject statement:
+-A INPUT -m state --state NEW -m udp -p udp --dport <port> -j ACCEPT
+(2)
+service iptables restart
+------------------------------------------------
+MaraDNS on CentOS => A lightweight DNS server
+https://www.howtoforge.com/tutorial/install-maradns-on-centos-7/
+------------------------------------------------
+redirect port 8080 on 80 for tomcat on CentOS:
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+shows nat list:
+iptables -t nat -v -L -n --line-number
+------------------------------------------------
+commands on startup :
+/etc/rc.local
+------------------------------------------------
+Access tomcat manager remotely
+every app has a file (that overrides context.xml file) in conf/Catalina/localhost with its app name
+in the case of /manager app create a file with manager.xml name and add following config:
+<Context privileged="true" antiResourceLocking="false"
+         docBase="${catalina.home}/webapps/manager">
+    <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="^.*$" />
+</Context>
+https://stackoverflow.com/questions/36703856/access-tomcat-manager-app-from-different-host
+------------------------------------------------
+to deploy app on root tomcat
+edit conf/server.xml and place following tag inside Host
+<Context path="" docBase="war_name" debug="0" reloadable="true"></Context>
+------------------------------------------------
+It seems that CentOS file system is case sensitive and this issue for mysql queries leads some problems
+(i had problem with login queries)
+to solve this issue:
+(1)change this system variable in the following file for mysql
+sudo nano /etc/mysql/my.cnf
+(2)then restart mysqld service
+(3-optional)to check variable:
+mysqladmin -u root -p variables
+*Drop old databases and create new one
+------------------------------------------------
+monitor system performance using rtop cmd tool
+Only dependency: Go language
+------------------------------------------------
+ create new user in mysql and grant access:
+ CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+ GRANT [type of permission] ON [database name].[table name] TO ‘[username]’@'localhost’;
+
+ SHOW GRANTS FOR [database] TO '[username]'@'servername';
+ ------------------------------------------------
+Enable Gzip on Tomcat
+under <Service name = "Catalina">
+<Connector port="8080" maxHttpHeaderSize="8192"
+		   maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+		   enableLookups="false" redirectPort="8443" acceptCount="100"
+		   connectionTimeout="20000" disableUploadTimeout="true"
+		   compression="on"
+		   compressionMinSize="1024"
+		   noCompressionUserAgents="gozilla, traviata"
+		   compressableMimeType="text/html,text/xml"/>
+
+check Gzip:
+curl  -H "Accept-Encoding: gzip" -I http://binside.ir
+------------------------------------------------
+examples app in Tomcat 8 => security issue => an open uploader
+domain.com/examples/servlets/nonblocking/bytecounter.html
+------------------------------------------------
+MySQL config file => /etc/my.cnf
+------------------------------------------------
+To change user's host name =>
+UPDATE mysql.user SET Host='%' WHERE Host='localhost' AND User='username';
+FLUSH PRIVILEGES;
+UPDATE mysql.db SET Host='%' WHERE Host='localhost' AND User='username';
+------------------------------------------------
+Find Process ID with listening port
+lsof -n -i4TCP:$PORT | grep LISTEN
+lsof -n -iTCP:$PORT | grep LISTEN
+lsof -n -i:$PORT | grep LISTEN
+
+kill it :
+kill -9 the_pid
+------------------------------------------------
+Get PID of process :
+ps -u my_account -o pid,rss,command | grep redis
+------------------------------------------------
+crawl a website fully with wget:
+wget --no-clobber --convert-links --random-wait -r -p --level 1 -E -e robots=off -U mozilla http://dumps.wikimedia.org/dewiki/20140528/
+------------------------------------------------

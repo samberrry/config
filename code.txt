@@ -1,0 +1,51 @@
+Centering column in Bootstrap
+https://stackoverflow.com/questions/18153234/center-a-column-using-twitter-bootstrap-3
+The first approach uses Bootstrap's own offset classes so it requires no change in markup and no extra CSS. The key is to set an offset equal to half of the remaining size of the row. So for example, a column of size 2 would be centered by adding an offset of 5, that's (12-2)/2.
+<div class="col-md-2 col-md-offset-5"></div>
+------------------------------------------------
+Getting HttpServletRequest with BnidingResult causes some issues!
+It's important to get HttpServletRequest first and then BindingResult object
+e.g:
+@Valid @ModelAttribute("conference")Conference conference, BindingResult result, Model model,HttpServletRequest request
+------------------------------------------------
+BindingResult
+getModel() => Map => key 'class name' => value object
+getAllErrors() => List => contains all rejected fields beside their defaultMessage
+------------------------------------------------
+To fit captcha div :
+.g-recaptcha {
+  transform: scale(2);
+  transform-origin: 0 0;
+}
+------------------------------------------------
+Redirecting to views
+https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-redirecting
+------------------------------------------------
+JPA map JSON column to Java Object:
+@Convert(converter = JpaConverterJson.class)
+^^^^^^^^
+public class JpaConverterJson implements AttributeConverter<Object, String> {
+  private final static ObjectMapper objectMapper = new ObjectMapper();
+  @Override
+  public String convertToDatabaseColumn(Object meta) {
+    try {
+      return objectMapper.writeValueAsString(meta);
+    } catch (JsonProcessingException ex) {
+      return null;
+      // or throw an error
+    }
+  }
+  @Override
+  public Object convertToEntityAttribute(String dbData) {
+    try {
+      return objectMapper.readValue(dbData, Object.class);
+    } catch (IOException ex) {
+      // logger.error("Unexpected IOEx decoding json from database: " + dbData);
+      return null;
+    }
+  }
+}
+------------------------------------------------
+Get file Extension from filename
+String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
+------------------------------------------------
